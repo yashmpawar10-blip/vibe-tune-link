@@ -19,7 +19,7 @@ const Index = () => {
   };
 
   const handlePlaySong = (song: Song) => {
-    if (!song.audioUrl) {
+    if (!song.audio_url) {
       toast({
         title: "No audio available",
         description: "This song doesn't have an audio file.",
@@ -32,7 +32,7 @@ const Index = () => {
       audioRef.current.pause();
     }
 
-    audioRef.current = new Audio(song.audioUrl);
+    audioRef.current = new Audio(song.audio_url);
     audioRef.current.play();
     
     toast({
@@ -76,10 +76,12 @@ const Index = () => {
             </h3>
             {isLoading ? (
               <div className="text-center py-12">
+                <Music className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50 animate-pulse" />
                 <p className="text-muted-foreground">Loading songs...</p>
               </div>
             ) : songs.length === 0 ? (
               <div className="text-center py-12">
+                <Music className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
                 <p className="text-muted-foreground">No songs found for this mood.</p>
               </div>
             ) : (

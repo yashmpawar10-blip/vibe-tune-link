@@ -7,8 +7,8 @@ export interface Song {
   title: string;
   artist: string;
   album: string;
-  imageUrl: string;
-  audioUrl?: string;
+  image_url: string;
+  audio_url: string;
 }
 
 interface SongCardProps {
@@ -21,7 +21,7 @@ export const SongCard = ({ song, onPlay }: SongCardProps) => {
     <Card className="group overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-glow hover:shadow-primary/20">
       <div className="relative aspect-square overflow-hidden bg-secondary">
         <img
-          src={song.imageUrl}
+          src={song.image_url}
           alt={`${song.title} by ${song.artist}`}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         />
