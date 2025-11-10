@@ -14,11 +14,14 @@ const Index = () => {
   };
 
   const handlePlaySong = (song: Song) => {
+    const searchQuery = encodeURIComponent(`${song.title} ${song.artist}`);
+    const youtubeMusicUrl = `https://music.youtube.com/search?q=${searchQuery}`;
+    window.open(youtubeMusicUrl, '_blank');
+    
     toast({
-      title: "Playing song",
+      title: "Opening YouTube Music",
       description: `${song.title} by ${song.artist}`,
     });
-    // YouTube Music integration will be added later
   };
 
   const displayedSongs = selectedMood ? mockSongs[selectedMood] : [];
