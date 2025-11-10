@@ -1,30 +1,45 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Music } from "lucide-react";
 import { MoodSelector, MoodType } from "@/components/MoodSelector";
 import { SongCard, Song } from "@/components/SongCard";
-import { mockSongs } from "@/data/mockSongs";
+import { useSongs } from "@/hooks/useSongs";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [selectedMood, setSelectedMood] = useState<MoodType | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
+  const { data: songs = [], isLoading } = useSongs(selectedMood);
 
   const handleMoodSelect = (mood: MoodType) => {
     setSelectedMood(mood);
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
   };
 
   const handlePlaySong = (song: Song) => {
-    const searchQuery = encodeURIComponent(`${song.title} ${song.artist}`);
-    const youtubeMusicUrl = `https://music.youtube.com/search?q=${searchQuery}`;
-    window.open(youtubeMusicUrl, '_blank');
+    if (!song.audioUrl) {
+      toast({
+        title: "No audio available",
+        description: "This song doesn't have an audio file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+    audioRef.current = new Audio(song.audioUrl);
+    audioRef.current.play();
     
     toast({
-      title: "Opening YouTube Music",
+      title: "Now Playing",
       description: `${song.title} by ${song.artist}`,
     });
   };
-
-  const displayedSongs = selectedMood ? mockSongs[selectedMood] : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -59,11 +74,21 @@ const Index = () => {
             <h3 className="text-2xl font-semibold text-foreground mb-6 capitalize">
               {selectedMood} vibes
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {displayedSongs.map((song) => (
-                <SongCard key={song.id} song={song} onPlay={handlePlaySong} />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Loading songs...</p>
+              </div>
+            ) : songs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No songs found for this mood.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {songs.map((song) => (
+                  <SongCard key={song.id} song={song} onPlay={handlePlaySong} />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

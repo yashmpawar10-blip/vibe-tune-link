@@ -8,6 +8,7 @@ export interface Song {
   artist: string;
   album: string;
   imageUrl: string;
+  audioUrl?: string;
 }
 
 interface SongCardProps {
